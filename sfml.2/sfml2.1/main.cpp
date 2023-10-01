@@ -10,7 +10,7 @@ int main()
 {
     constexpr float BALL_SIZE = 40;
 
-    sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Wave Moveng Ball and Wall");
+    sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Wave Moveng Ball and Wall ");
     sf::Clock clock;
 
     sf::Vector2f position = {10, 350};
