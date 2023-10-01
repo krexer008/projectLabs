@@ -39,12 +39,6 @@ int main()
         {
             speedXE = -speedXE;
         }
-        /*
-        if ((position.x < 0) && (speedXE < 0))
-        {
-            speedXE = -speedXE;
-        }
-        */
 
         const float deltaTime = clock.restart().asSeconds();
 
