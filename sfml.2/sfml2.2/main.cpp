@@ -3,8 +3,8 @@
 #include <cmath>
 
 constexpr int pointCount = 200;
-constexpr float radiusCircle = 50.f;
-constexpr float stepPerSec = 2.f;
+constexpr float circleRadius = 100.f;
+constexpr float stepPerSec = 1.f;
 
 // Инициализируем вершины псевдо-эллипса.
 void shapeSetPointing(sf::ConvexShape *shape, sf::Vector2f position)
@@ -32,7 +32,9 @@ int main()
         sf::Style::Default,
         settings);
 
-    const sf::Vector2f centerCircle = {400.f, 320.f};
+    sf::Clock clock;
+
+    const sf::Vector2f circleCenter = {400.f, 300.f};
     const float circleSpeed = stepPerSec * (2 * M_PI);
 
     //  Объявляем фигуру Rose
@@ -41,22 +43,6 @@ int main()
     rose.setPointCount(pointCount);
 
     sf::Vector2f position = {400, 320};
-
-    // Инициализируем вершины псевдо-эллипса.
-    /*
-    rose.setPointCount(pointCount);
-    for (int pointNo = 0; pointNo < pointCount; ++pointNo)
-    {
-        float angle = float(2 * M_PI * pointNo) / float(pointCount);
-
-        float roseRadius = 200 * sin(6 * angle);
-
-        sf::Vector2f point = {
-            roseRadius * std::sin(angle),
-            roseRadius * std::cos(angle)};
-        rose.setPoint(pointNo, point);
-    }
-    */
 
     // Выполняем основной цикл программы
     while (window.isOpen())
@@ -70,7 +56,14 @@ int main()
             }
         }
 
-        shapeSetPointing(&rose, position);
+        const float time = clock.getElapsedTime().asSeconds();
+        float circleAngle = circleSpeed * time;
+        float x = circleCenter.x + round(circleRadius * cos(circleAngle));
+        float y = circleCenter.y + round(circleRadius * sin(circleAngle));
+
+        const sf::Vector2f offset = {x, y};
+
+        shapeSetPointing(&rose, offset);
 
         window.clear();
         window.draw(rose);
