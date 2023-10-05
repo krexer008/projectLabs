@@ -1,4 +1,6 @@
 #include <SFML/Graphics.hpp>
+#include <cmath>
+#include <iostream>
 
 struct Arrow
 {
@@ -6,33 +8,14 @@ struct Arrow
     sf::RectangleShape stem;
     sf::Vector2f position;
     float rotation = 0;
-}
-
-// Инициализирует фигуру-стрелку
-void
-initArrow(Arrow &arrow)
-{
-    arrow.position = {400, 300};
-
-    arrow.head.setPointCount(2);
-    arrow.head.setPoint(0, {30, 0});
-    arrow.head.setPoint(1, {0, -20});
-    arrow.head.setPoint(2, {0, 20});
-    arrow.head.setFillColor(sf::Color(0ff, 0, 0));
-
-    arrow.stem.setSize({80, 20});
-    arrow.stem.setOrigin({40, 10});
-    arrow.stem.setFillColor(sf::Color(0xf0, 0xa0, 0x00));
-
-    updateArrowElements(arrow);
-}
+};
 
 //Переводит полярные координаты в декартовы
 sf::Vector2f toEuclidean(float radius, float angle)
 {
     return {
-        radius * cos(angle),
-        radius * sin(angle)};
+        float(radius * cos(angle)),
+        float(radius * sin(angle))};
 }
 
 // Переводит радианы в градусы
@@ -53,19 +36,69 @@ void updateArrowElements(Arrow &arrow)
     arrow.stem.setPosition(arrow.position);
     arrow.stem.setRotation(toDegrees(arrow.rotation));
 }
+
+// Инициализирует фигуру-стрелку
+void initArrow(Arrow &arrow)
+{
+    arrow.position = {400, 300};
+
+    arrow.head.setPointCount(3);
+    arrow.head.setPoint(0, {30, 0});
+    arrow.head.setPoint(1, {0, -20});
+    arrow.head.setPoint(2, {0, 20});
+    arrow.head.setFillColor(sf::Color(0xff, 0, 0));
+
+    arrow.stem.setSize({80, 20});
+    arrow.stem.setOrigin({40, 10});
+    arrow.stem.setFillColor(sf::Color(0xf0, 0xa0, 0x00));
+
+    updateArrowElements(arrow);
+}
+
+// Обрабатывает событие MouseMove, обновляя позицию мыши
+void onMouseMove(const sf::Event::MouseMoveEvent &event, sf::Vector2f &mousePosition)
+{
+    std::cout << "mouse x=" << event.x
+              << ", y=" << event.y
+              << std::endl;
+    mousePosition = {float(event.x), float(event.y)};
+}
+
 // Опрашивает и обрабатывает доступные события в цикле.
 void pollEvents(sf::RenderWindow &window, sf::Vector2f &mousePosition)
 {
+    sf::Event event;
+    while (window.pollEvent(event))
+    {
+        switch (event.type)
+        {
+        case sf::Event::Closed:
+            window.close();
+            break;
+        case sf::Event::MouseMoved:
+            onMouseMove(event.mouseMove, mousePosition);
+            break;
+        default:
+            break;
+        }
+    }
 }
 
 // Обновляет фигуру, указывающую на мышь
 void update(const sf::Vector2f &mousePosition, Arrow &arrow)
 {
+    const sf::Vector2f delta = mousePosition - arrow.position;
+    arrow.rotation = atan2(delta.y, delta.x);
+    updateArrowElements(arrow);
 }
 
 // Рисует и выводит один кадр
 void redrawFrame(sf::RenderWindow &window, Arrow &arrow)
 {
+    window.clear();
+    window.draw(arrow.stem);
+    window.draw(arrow.head);
+    window.display();
 }
 
 // Программа рисует в окне стрелку, которая поворачивается вслед за курсором мыши.
