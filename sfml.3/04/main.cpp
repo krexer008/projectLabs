@@ -38,6 +38,7 @@ void updateArrowElements(Arrow &arrow)
 }
 
 // Инициализирует фигуру-стрелку
+
 void initArrow(Arrow &arrow)
 {
     arrow.position = {400, 300};
