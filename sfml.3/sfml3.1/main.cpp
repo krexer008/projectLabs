@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 // Инициализирует фигуру-указатель
 void init(sf::ConvexShape &pointer)
@@ -25,7 +26,6 @@ void onMouseMove(const sf::Event::MouseMoveEvent &event, sf::Vector2f &mousePosi
     std::cout << "mouse x=" << event.x
               << ". y=" << event.y
               << std::endl;
-
     mousePosition = {float(event.x), float(event.y)};
 }
 
@@ -50,11 +50,33 @@ void pollEvents(sf::RenderWindow &window, sf::Vector2f &mousePosition)
 }
 
 // Обновляет фигуру, указывающую на мышь
-void update(const sf::Vector2f &mousePosition, sf::ConvexShape &pointer)
+void update(const sf::Vector2f &mousePosition, sf::ConvexShape &pointer, sf::Clock &clock)
 {
+    float maxSpeed = 100.f;
+    const float deltaTime = clock.restart().asSeconds();
     const sf::Vector2f delta = mousePosition - pointer.getPosition();
-    const float angle = atan2(delta.y, delta.x);
-    pointer.setRotation(toDegrees(angle));
+
+    float newAngle = toDegrees(atan2(delta.y, delta.x));
+
+    if (newAngle < 0)
+    {
+        newAngle = newAngle + 360;
+    }
+
+    const float currentAngle = pointer.getRotation();
+
+    if (newAngle != currentAngle)
+    {
+        float rotateAngle = newAngle - currentAngle;
+        if ((rotateAngle < 180) && (rotateAngle > 0) || rotateAngle < -180)
+        {
+            pointer.rotate(maxSpeed * deltaTime);
+        }
+        else
+        {
+            pointer.rotate(-maxSpeed * deltaTime);
+        }
+    }
 }
 
 // Рисует и выводит один кадр
@@ -74,16 +96,17 @@ int main()
     settings.antialiasingLevel = 8;
     sf::RenderWindow window(
         sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}),
-        "Pointer follows mouse ", sf::Style::Default, settings);
-
+        "Pointer follows mouse", sf::Style::Default, settings);
+    sf::Clock clock;
     sf::ConvexShape pointer;
     sf::Vector2f mousePosition;
 
     init(pointer);
     while (window.isOpen())
     {
+
         pollEvents(window, mousePosition);
-        update(mousePosition, pointer);
+        update(mousePosition, pointer, clock);
         redrawFrame(window, pointer);
     }
 }

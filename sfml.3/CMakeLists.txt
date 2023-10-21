@@ -14,5 +14,7 @@ add_subdirectory(01)
 add_subdirectory(02)
 add_subdirectory(022)
 add_subdirectory(03)
-
+add_subdirectory(sfml3.1)
+add_subdirectory(sfml3.2)
+add_subdirectory(sfml3.3)
 add_subdirectory(04)

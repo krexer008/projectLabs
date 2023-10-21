@@ -8,8 +8,9 @@ int main()
 
     window.clear();
 
-    sf::CircleShape shape1(40);
-    shape1.setPosition({200, 120});
+    sf::CircleShape shape1(100);
+    shape1.setPosition({0, 0});
+    shape1.setOrigin({100, 100});
     shape1.setFillColor(sf::Color(0xFF, 0x0, 0x0));
     window.draw(shape1);
 
