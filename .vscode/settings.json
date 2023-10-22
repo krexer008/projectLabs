@@ -50,5 +50,6 @@
         "xutility": "cpp",
         "algorithm": "cpp",
         "optional": "cpp"
-    }
+    },
+    "editor.formatOnSave": true
 }
