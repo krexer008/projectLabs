@@ -54,6 +54,7 @@ void initEye(Eye &eye, sf::Vector2f position)
 {
 
     eye.position = position;
+
     eye.eye.setPosition(position);
     eye.eye.setFillColor(sf::Color(0xff, 0xff, 0xff));
     const sf::Vector2f eyeRadius = {60, 100};
