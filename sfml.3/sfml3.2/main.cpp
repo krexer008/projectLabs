@@ -38,37 +38,37 @@ void updatePupilPosition(Eye &eye)
     }
 }
 
+//init Ellipse
+void initEllipse(sf::ConvexShape &ellipse,
+                 sf::Vector2f ellipseRadius)
+{
+    const float pointCount = 200;
+    ellipse.setPointCount(pointCount);
+    for (int pointNo = 0; pointNo < pointCount; ++pointNo)
+    {
+        float angle = float(2 * M_PI * pointNo) / float(pointCount);
+        sf::Vector2f point = {
+            float(ellipseRadius.x * std::sin(angle)),
+            float(ellipseRadius.y * std::cos(angle))};
+        ellipse.setPoint(pointNo, point);
+    }
+}
+
 // init Eye
 void initEye(Eye &eye, sf::Vector2f position)
 {
+
     eye.position = position;
     eye.eye.setPosition(position);
     eye.eye.setFillColor(sf::Color(0xff, 0xff, 0xff));
-    eye.eye.setPointCount(200);
-
     const sf::Vector2f eyeRadius = {60, 100};
-    for (int pointNo = 0; pointNo < 200; ++pointNo)
-    {
-        float angle = float(2 * M_PI * pointNo) / float(200);
-        sf::Vector2f point = {
-            eyeRadius.x * std::sin(angle),
-            eyeRadius.y * std::cos(angle)};
-        eye.eye.setPoint(pointNo, point);
-    }
 
     eye.pupil.setPosition(position);
-    eye.pupil.setFillColor(sf::Color(0x80, 0xa6, 0xff));
-    eye.pupil.setPointCount(200);
+    eye.pupil.setFillColor(sf::Color(0x0, 0x0, 0x0));
     const sf::Vector2f pupilRadius = {15, 25};
 
-    for (int pointNo = 0; pointNo < 200; ++pointNo)
-    {
-        float angle = float(2 * M_PI * pointNo) / float(200);
-        sf::Vector2f point = {
-            pupilRadius.x * std::sin(angle),
-            pupilRadius.y * std::cos(angle)};
-        eye.pupil.setPoint(pointNo, point);
-    }
+    initEllipse(eye.eye, eyeRadius);
+    initEllipse(eye.pupil, pupilRadius);
 
     updatePupilPosition(eye);
 }
@@ -77,9 +77,6 @@ void initEye(Eye &eye, sf::Vector2f position)
 
 void onMouseMove(const sf::Event::MouseMoveEvent &event, sf::Vector2f &mousePosition)
 {
-    std::cout << "mouse x=" << event.x
-              << ", y=" << event.y
-              << std::endl;
     mousePosition = {float(event.x), float(event.y)};
 }
 
