@@ -26,7 +26,6 @@ float toDegrees(float radians)
 
 // Обновляет позиции и повороты зрачков согласно текущему
 // состоянию курсора
-
 void updatePupilPosition(Eye &eye)
 {
     if (eye.rotation != 0)

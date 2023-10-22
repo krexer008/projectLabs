@@ -27,7 +27,6 @@ float toDegrees(float radians)
 
 // Обновляет позиции и повороты зрачков согласно текущему
 // состоянию курсора
-
 void updatePupilPosition(Eye &eye)
 {
     const sf::Vector2f eyeOffset = toEuclidean(eye.pupilOrbitRadius, eye.rotation);
