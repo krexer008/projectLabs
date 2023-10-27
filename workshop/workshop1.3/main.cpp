@@ -102,7 +102,7 @@ int main()
     sf::Vector2f mousePosition;
 
     sf::Texture texture;
-    if (!texture.loadFromFile("cat.png"))
+    if (!texture.loadFromFile("cat1.png"))
     {
     }
     sf::Sprite sprite;

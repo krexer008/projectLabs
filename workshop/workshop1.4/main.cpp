@@ -40,7 +40,6 @@ void pollEvents(sf::RenderWindow &window, sf::Vector2f &mousePosition)
 // Обновляет фигуру, указывающую на мышь
 void update(const sf::Vector2f &mousePosition, sf::Sprite &sprite, sf::Clock &clock)
 {
-
     float maxSpeed = 100.f;
     float maxLineSpeed = 100.f;
     const float deltaTime = clock.restart().asSeconds();
@@ -106,7 +105,7 @@ int main()
     sf::Vector2f mousePosition;
 
     sf::Texture texture;
-    if (!texture.loadFromFile("cat.png"))
+    if (!texture.loadFromFile("cat1.png"))
     {
     }
     sf::Sprite sprite;

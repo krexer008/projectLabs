@@ -46,7 +46,7 @@ void pollEvents(sf::RenderWindow &window, sf::Vector2f &mousePosition)
 // Рисует и выводит один кадр
 void redrawFrame(sf::RenderWindow &window, sf::ConvexShape &shape)
 {
-    window.clear(sf::Color::Magenta);
+    window.clear(sf::Color::White);
     window.draw(shape);
     window.display();
 }
