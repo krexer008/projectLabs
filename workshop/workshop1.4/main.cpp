@@ -9,12 +9,16 @@ float toDegrees(float radians)
 }
 
 // Обрабатывает событие MouseMove, обновляя позиции мыши
-void onMouseMove(const sf::Event::MouseMoveEvent &event, sf::Vector2f &mousePosition)
+void onMouseClick(const sf::Event::MouseButtonPressed &event, sf::Vector2f &mousePosition)
 {
-    std::cout << "mouse x=" << event.x
-              << ". y=" << event.y
-              << std::endl;
-    mousePosition = {float(event.x), float(event.y)};
+    if (event.button == sf::Mouse::Left)
+    {
+        std::cout << "the left button was pressed" << std::endl;
+        std::cout << "mouse x: " << event.x << std::endl;
+        std::cout << "mouse y: " << event.y << std::endl;
+        mousePosition.x = event.x;
+        mousePosition.y = event.y;
+    };
 }
 
 // Опрашивает и обрабатывает доступные события в цикле.
@@ -28,8 +32,16 @@ void pollEvents(sf::RenderWindow &window, sf::Vector2f &mousePosition)
         case sf::Event::Closed:
             window.close();
             break;
-        case sf::Event::MouseMoved:
-            onMouseMove(event.mouseMove, mousePosition);
+        case sf::Event::MouseButtonPressed:
+            // if (event.mouseButton.button == sf::Mouse::Left)
+            // {
+            //     std::cout << "the left button was pressed" << std::endl;
+            //     std::cout << "mouse x: " << event.mouseButton.x << std::endl;
+            //     std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+            //     mousePosition.x = event.mouseButton.x;
+            //     mousePosition.y = event.mouseButton.y;
+            // };
+            onMouseClick(event.mouseButton, mousePosition);
             break;
         default:
             break;
@@ -43,7 +55,7 @@ void update(const sf::Vector2f &mousePosition, sf::Sprite &sprite, sf::Clock &cl
     float maxSpeed = 100.f;
     float maxLineSpeed = 100.f;
     const float deltaTime = clock.restart().asSeconds();
-    const sf::Vector2f motion = mousePosition - sprite.getPosition();
+    sf::Vector2f motion = mousePosition - sprite.getPosition();
 
     // Движение кота
     const float motionLendth = std::sqrt(motion.x * motion.x + motion.y * motion.y);
@@ -57,6 +69,7 @@ void update(const sf::Vector2f &mousePosition, sf::Sprite &sprite, sf::Clock &cl
         }
     }
 
+    motion = mousePosition - sprite.getPosition();
     float newAngle = toDegrees(atan2(motion.y, motion.x));
     if (newAngle < 0)
     {
@@ -64,19 +77,16 @@ void update(const sf::Vector2f &mousePosition, sf::Sprite &sprite, sf::Clock &cl
     }
 
     const float currentAngle = sprite.getRotation();
+    const float delta = std::sqrt(motion.x * motion.x + motion.y * motion.y);
 
-    if (newAngle != currentAngle)
+    if ((newAngle != currentAngle) && (delta > 1))
     {
-        float rotateAngle = newAngle - currentAngle;
-        if ((rotateAngle < 180) && (rotateAngle > 0) || rotateAngle < -180)
+        if ((newAngle <= 90) || (newAngle >= 270) && (newAngle < 450))
         {
-
-            //sprite.rotate(maxSpeed * deltaTime);
-            //sprite.setScale(sf::Vector2f(1, 1));
+            sprite.setScale(sf::Vector2f(1, 1));
         }
         else
         {
-            //sprite.rotate(-maxSpeed * deltaTime);
             sprite.setScale(sf::Vector2f(-1, 1));
         }
     }
