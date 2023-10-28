@@ -9,20 +9,21 @@ float toDegrees(float radians)
 }
 
 // Обрабатывает событие MouseMove, обновляя позиции мыши
-void onMouseClick(const sf::Event::MouseButtonPressed &event, sf::Vector2f &mousePosition)
+void onMouseClick(const sf::Event &event, sf::Vector2f &mousePosition, sf::Sprite &sprite)
 {
-    if (event.button == sf::Mouse::Left)
+    if (event.mouseButton.button == sf::Mouse::Left)
     {
         std::cout << "the left button was pressed" << std::endl;
-        std::cout << "mouse x: " << event.x << std::endl;
-        std::cout << "mouse y: " << event.y << std::endl;
-        mousePosition.x = event.x;
-        mousePosition.y = event.y;
+        std::cout << "mouse x: " << event.mouseButton.x
+                  << "mouse y: " << event.mouseButton.y << std::endl;
+        mousePosition.x = event.mouseButton.x;
+        mousePosition.y = event.mouseButton.y;
+        sprite.setPosition({mousePosition.x, mousePosition.y});
     };
 }
 
 // Опрашивает и обрабатывает доступные события в цикле.
-void pollEvents(sf::RenderWindow &window, sf::Vector2f &mousePosition)
+void pollEvents(sf::RenderWindow &window, sf::Vector2f &mousePosition, sf::Sprite &sprite)
 {
     sf::Event event;
     while (window.pollEvent(event))
@@ -33,15 +34,7 @@ void pollEvents(sf::RenderWindow &window, sf::Vector2f &mousePosition)
             window.close();
             break;
         case sf::Event::MouseButtonPressed:
-            // if (event.mouseButton.button == sf::Mouse::Left)
-            // {
-            //     std::cout << "the left button was pressed" << std::endl;
-            //     std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-            //     std::cout << "mouse y: " << event.mouseButton.y << std::endl;
-            //     mousePosition.x = event.mouseButton.x;
-            //     mousePosition.y = event.mouseButton.y;
-            // };
-            onMouseClick(event.mouseButton, mousePosition);
+            onMouseClick(event, mousePosition, sprite);
             break;
         default:
             break;
@@ -93,10 +86,11 @@ void update(const sf::Vector2f &mousePosition, sf::Sprite &sprite, sf::Clock &cl
 }
 
 // Рисует и выводит один кадр
-void redrawFrame(sf::RenderWindow &window, sf::Sprite &sprite)
+void redrawFrame(sf::RenderWindow &window, sf::Sprite &sprite1, sf::Sprite &sprite2)
 {
     window.clear(sf::Color::White);
-    window.draw(sprite);
+    window.draw(sprite1);
+    window.draw(sprite2);
     window.display();
 }
 
@@ -109,26 +103,36 @@ int main()
     settings.antialiasingLevel = 8;
     sf::RenderWindow window(
         sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}),
-        "Arrow following and mooveing to coursor", sf::Style::Default, settings);
+        "Cat mooveing to red pointer", sf::Style::Default, settings);
 
     sf::Clock clock;
     sf::Vector2f mousePosition;
 
-    sf::Texture texture;
-    if (!texture.loadFromFile("cat1.png"))
+    sf::Texture textureCat;
+    if (!textureCat.loadFromFile("cat1.png"))
     {
+        std::cout << "Error load texture" << std::endl;
     }
-    sf::Sprite sprite;
-    sprite.setTexture(texture);
+    sf::Sprite cat;
+    cat.setTexture(textureCat);
 
-    sprite.setOrigin(sf::Vector2f(25, 25));
-    texture.setSmooth(true);
-    sprite.setPosition({WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2});
+    sf::Texture textureRedPointer;
+    if (!textureRedPointer.loadFromFile("red_pointer.png"))
+    {
+        std::cout << "Error load texturePoint" << std::endl;
+    }
+    cat.setOrigin(sf::Vector2f(45, 17));
+    cat.setPosition({WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2});
+
+    sf::Sprite redPointer;
+    redPointer.setTexture(textureRedPointer);
+    redPointer.setOrigin(sf::Vector2f(16, 16));
+
     mousePosition = {WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2};
     while (window.isOpen())
     {
-        pollEvents(window, mousePosition);
-        update(mousePosition, sprite, clock);
-        redrawFrame(window, sprite);
+        pollEvents(window, mousePosition, redPointer);
+        update(mousePosition, cat, clock);
+        redrawFrame(window, cat, redPointer);
     }
 }
